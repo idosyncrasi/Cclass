@@ -1,2 +1,2 @@
 language = "c"
-run = "gcc *.c && ./a.out && rm a.out"
+run = "gcc -I'src/headers/' src/*.c && ./a.out && rm a.out"

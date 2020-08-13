@@ -1,5 +1,5 @@
-#include "include/functions.h"
-#include "include/forLoop.h"
+#include "../include/functions.h"
+#include "../include/forLoop.h"
 
 
 int main(){

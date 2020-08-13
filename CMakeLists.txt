@@ -4,4 +4,9 @@ cmake_minimum_required(VERSION 3.10)
 project(Classwork)
 
 # add the executable
-add_executable(Tutorial tutorial.c)
+add_executable(Classwork
+        src/forLoop.c
+        src/functions.c
+        src/main.c
+
+        )

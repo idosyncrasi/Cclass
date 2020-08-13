@@ -1,7 +1,7 @@
-#include "stdio.h"
-#include "forloop.h"
+#include <stdio.h>
+#include "include/forLoop.h"
 
-void doForLoop(){
+void forLoop(){
 	int arr[5];
 
 	for(int i = 0; i < 5; i++){

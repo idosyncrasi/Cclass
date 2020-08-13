@@ -1,10 +1,11 @@
-#include "forloop.h"
-#include "functions.h"
-#include "graphicTest.h"
+#include "include/functions.h"
+#include "include/forLoop.h"
+
 
 int main(){
 
-	
+    doAdd();
+    forLoop();
 
 	return 0;
 }

@@ -1,2 +1,2 @@
 language = "c"
-run = "gcc mazeGen.c && ./a.out && rm a.out"
+run = "gcc src/mazeGen.c && ./a.out && rm a.out"

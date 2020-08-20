@@ -14,12 +14,6 @@ struct point{
 	int x, y;
 };
 
-struct dirInfo{
-    struct point *north, *east, *south, *west;
-
-    int northPossible, eastPossible, southPossible, westPossible;
-};
-
 int checkOOB(struct point pnt){
 	if(pnt.y-1 < 0 || pnt.y+1 > mH || pnt.x-1 < 0 || pnt.x+1 > mW){
 		return 1;
@@ -27,53 +21,59 @@ int checkOOB(struct point pnt){
 	return 0;
 }
 
-int pickDir(int maze[mW][mH], struct point pnt){
+struct point pickDir(int maze[mW][mH], struct point pnt){
 	
+	struct point failure = {-1, -1};
+
 	if(checkOOB(pnt) != 0){
-		return -1;
+		return failure;
 	}
 
-	struct dirInfo info = {
-        {pnt.x, pnt.y - 1}
-        {pnt.x + 1, pnt.y}
-        {pnt.x, pnt.y + 1}
-        {pnt.x - 1, pnt.y}
+	struct point n = { pnt.x, pnt.y-1 },
+				 e = { pnt.x+1, pnt.y },
+				 s = { pnt.x, pnt.y+1 },
+				 w = { pnt.x-1, pnt.y};
 
-	        /*
-	    &maze[ pnt.x] [ pnt.y - 1],
-		&maze[ pnt.x + 1 ] [ pnt.y ],
-		&maze[ pnt.x ] [ pnt.y + 1 ],
-		&maze[ pnt.x - 1 ] [ pnt.y ],
-	         */
-	};
+	int northPossible,
+		eastPossible,
+		southPossible,
+		westPossible;
 
-	if(info.north == 0){
-	    info.northPossible = 1;
+	if(&maze[n.x][n.y] == 0){
+	    northPossible = 1;
 	}else{
-		info.northPossible = 0;
+		northPossible = 0;
 	}
-	if(info.east == 0){
-	    info.eastPossible = 1;
+	if(&maze[e.x][e.y] == 0){
+	    eastPossible = 1;
 	}else{
-		info.eastPossible = 0;
+		eastPossible = 0;
 	}
-	if(info.south == 0){
-	    info.southPossible = 1;
+	if(&maze[s.x][s.y] == 0){
+	    southPossible = 1;
 	}else{
-		info.southPossible = 0;
+		southPossible = 0;
 	}
-	if(info.west == 0){
-	    info.westPossible = 1;
+	if(&maze[w.x][w.y] == 0){
+	    westPossible = 1;
 	}else{
-		info.westPossible = 0;
+		westPossible = 0;
 	}
 
-    int sum = info.northPossible + info.eastPossible + info.southPossible + info.westPossible;
+    int sum = (northPossible + eastPossible + southPossible + westPossible) - 1;
 
 	int num =  getNum(0, sum);
 
 	if(num == 0){
-	    return &north;
+	    return n;
+	}else if(num == 1){
+		return e;
+	}else if(num == 2){
+		return s;
+	}else if(num == 3){
+		return w;
+	}else{
+		return failure;
 	}
 }
 
@@ -95,11 +95,27 @@ void printMaze(int maze[mW][mH]){
 }
 
 int main(){
-	int maze[mW][mH];
+	//int maze[mW][mH];
 	
-	mazeInit(maze);
+	//mazeInit(maze);
 
-	printMaze(maze);
+	//printMaze(maze);
+
+	struct point pnt = {0,0};
+
+	struct dirInfo info = {
+        pnt.x, pnt.y - 1,
+        pnt.x + 1, pnt.y,
+        pnt.x, pnt.y + 1,
+        pnt.x - 1, pnt.y,
+
+	        /*
+	    &maze[ pnt.x] [ pnt.y - 1],
+		&maze[ pnt.x + 1 ] [ pnt.y ],
+		&maze[ pnt.x ] [ pnt.y + 1 ],
+		&maze[ pnt.x - 1 ] [ pnt.y ],
+	         */
+	};
 
 	return 0;
 }

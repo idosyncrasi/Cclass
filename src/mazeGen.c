@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+#include <stdbool.h>
 
 int mW = 10;
 int mH = 10;
@@ -13,67 +13,89 @@ int getNum(int lower, int upper){
 struct point{
 	int x, y;
 };
-
-int checkOOB(struct point pnt){
-	if(pnt.y-1 < 0 || pnt.y+1 > mH || pnt.x-1 < 0 || pnt.x+1 > mW){
-		return 1;
-	}
-	return 0;
-}
+struct point origin   = { 0,  0},
+             errGen   = {-1, 0},
+             errOOB   = {-1, 1},
+             errNoDir = {-1, 2};
 
 struct point pickDir(int maze[mW][mH], struct point pnt){
-	
-	struct point failure = {-1, -1};
 
-	if(checkOOB(pnt) != 0){
-		return failure;
-	}
+    int northPos,
+        eastPos,
+        southPos,
+        westPos;
 
+    // North
+    if(pnt.y-1 < 0 ){
+        northPos = 0;
+    }
+    // South
+    if(pnt.y+1 > mH){
+        southPos = 0;
+    }
+    // West
+    if(pnt.x-1 < 0){
+        westPos = 0;
+    }
+    // East
+    if(pnt.x+1 > mW){
+        eastPos = 0;
+    }
+
+    struct point n,e,s,w;
+
+    if(northPos != 0){
+        n = { pnt.x, pnt.y-1 };
+    }else if(eastPos != 0){
+        e = { pnt.x+1, pnt.y };
+    }else if(southPos != 0){
+        s = { pnt.x, pnt.y+1 }
+    }else if(westPos != 0){
+        w = { pnt.x-1, pnt.y };
+    }
+
+    /*
 	struct point n = { pnt.x, pnt.y-1 },
 				 e = { pnt.x+1, pnt.y },
 				 s = { pnt.x, pnt.y+1 },
-				 w = { pnt.x-1, pnt.y};
+				 w = { pnt.x-1, pnt.y };
+     */
 
-	int northPossible,
-		eastPossible,
-		southPossible,
-		westPossible;
-
-	if(&maze[n.x][n.y] == 0){
-	    northPossible = 1;
+	if(&maze[n.x][n.y] == 0 && northPos != 0){
+	    northPos = 1;
 	}else{
-		northPossible = 0;
+		northPos = 0;
 	}
-	if(&maze[e.x][e.y] == 0){
-	    eastPossible = 1;
+	if(&maze[e.x][e.y] == 0 && eastPos != 0){
+	    eastPos = 1;
 	}else{
-		eastPossible = 0;
+		eastPos = 0;
 	}
-	if(&maze[s.x][s.y] == 0){
-	    southPossible = 1;
+	if(&maze[s.x][s.y] == 0 && southPos != 0){
+	    southPos = 1;
 	}else{
-		southPossible = 0;
+		southPos = 0;
 	}
-	if(&maze[w.x][w.y] == 0){
-	    westPossible = 1;
+	if(&maze[w.x][w.y] == 0 && westPos != 0){
+	    westPos = 1;
 	}else{
-		westPossible = 0;
+		westPos = 0;
 	}
 
-    int sum = (northPossible + eastPossible + southPossible + westPossible) - 1;
+	int num =  getNum(0, 3);
 
-	int num =  getNum(0, sum);
-
-	if(num == 0){
+	// TODO: Fix; doesnt pick correct directions based on available directions
+	// TODO: Test
+	if(num == 0 && northPos == 1){
 	    return n;
-	}else if(num == 1){
+	}else if(num == 1 && eastPos == 1){
 		return e;
-	}else if(num == 2){
+	}else if(num == 2 && southPos == 1){
 		return s;
-	}else if(num == 3){
+	}else if(num == 3 && westPos == 1){
 		return w;
 	}else{
-		return failure;
+		return errNoDir;
 	}
 }
 
@@ -94,28 +116,35 @@ void printMaze(int maze[mW][mH]){
 	}
 }
 
+bool equalTo(struct point pnt1, struct point pnt2){
+    if(pnt1.x == pnt2.x && pnt1.y == pnt2.y){
+        return true;
+    }else{
+        return false;
+    }
+}
+
 int main(){
-	//int maze[mW][mH];
-	
-	//mazeInit(maze);
+	int maze[mW][mH];
 
-	//printMaze(maze);
+	mazeInit(maze);
 
-	struct point pnt = {0,0};
+	printMaze(maze);
 
-	struct dirInfo info = {
-        pnt.x, pnt.y - 1,
-        pnt.x + 1, pnt.y,
-        pnt.x, pnt.y + 1,
-        pnt.x - 1, pnt.y,
+	struct point res = pickDir(maze, origin);
 
-	        /*
-	    &maze[ pnt.x] [ pnt.y - 1],
-		&maze[ pnt.x + 1 ] [ pnt.y ],
-		&maze[ pnt.x ] [ pnt.y + 1 ],
-		&maze[ pnt.x - 1 ] [ pnt.y ],
-	         */
-	};
+	if(equalTo(res, errGen)){
+	    printf("Error");
+	    return 1;
+	}else if(equalTo(res, errOOB)){
+	    printf("Index out of bounds");
+	    return 2;
+	}else if(equalTo(res, errNoDir)){
+	    printf("No direction found");
+	    return 3;
+	}else{
+
+	}
 
 	return 0;
 }

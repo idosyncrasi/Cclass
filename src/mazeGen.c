@@ -84,8 +84,7 @@ struct point pickDir(int maze[mW][mH], struct point pnt){
 
 	int num =  getNum(0, 3);
 
-	// TODO: Fix; doesnt pick correct directions based on available directions
-	// TODO: Test
+	// TODO: Fix; doesnt pick correct directions based on available directions && test
 	if(num == 0 && northPos == 1){
 	    return n;
 	}else if(num == 1 && eastPos == 1){

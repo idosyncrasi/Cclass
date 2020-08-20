@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #include <string.h>
 
 int mW = 10;
@@ -11,21 +10,14 @@ int getNum(int lower, int upper){
     return(num);
 }
 
-struct dirInfo{ 
-	int *north;
-	int *east;
-	int *south;
-	int *west;
-
-	bool northPossible;
-	bool eastPossible;
-	bool southPossible;
-	bool westPossible;
+struct point{
+	int x, y;
 };
 
-struct point{
-	int x;
-	int y;
+struct dirInfo{
+    struct point *north, *east, *south, *west;
+
+    int northPossible, eastPossible, southPossible, westPossible;
 };
 
 int checkOOB(struct point pnt){
@@ -38,41 +30,51 @@ int checkOOB(struct point pnt){
 int pickDir(int maze[mW][mH], struct point pnt){
 	
 	if(checkOOB(pnt) != 0){
-		return 1;
+		return -1;
 	}
 
 	struct dirInfo info = {
-		// TODO: Check if index out of bounds
-		&maze[ pnt.x ] [ pnt.y - 1 ],
+        {pnt.x, pnt.y - 1}
+        {pnt.x + 1, pnt.y}
+        {pnt.x, pnt.y + 1}
+        {pnt.x - 1, pnt.y}
+
+	        /*
+	    &maze[ pnt.x] [ pnt.y - 1],
 		&maze[ pnt.x + 1 ] [ pnt.y ],
 		&maze[ pnt.x ] [ pnt.y + 1 ],
 		&maze[ pnt.x - 1 ] [ pnt.y ],
+	         */
 	};
 
 	if(info.north == 0){
-	    info.northPossible = true;
+	    info.northPossible = 1;
 	}else{
-		info.northPossible = false;
+		info.northPossible = 0;
 	}
 	if(info.east == 0){
-	    info.eastPossible = true;
+	    info.eastPossible = 1;
 	}else{
-		info.eastPossible = false;
+		info.eastPossible = 0;
 	}
 	if(info.south == 0){
-	    info.southPossible = true;
+	    info.southPossible = 1;
 	}else{
-		info.southPossible = false;
+		info.southPossible = 0;
 	}
 	if(info.west == 0){
-	    info.westPossible = true;
+	    info.westPossible = 1;
 	}else{
-		info.westPossible = false;
+		info.westPossible = 0;
 	}
 
+    int sum = info.northPossible + info.eastPossible + info.southPossible + info.westPossible;
 
+	int num =  getNum(0, sum);
 
-	return 0;
+	if(num == 0){
+	    return &north;
+	}
 }
 
 void mazeInit(int maze[mW][mH]){
@@ -96,6 +98,7 @@ int main(){
 	int maze[mW][mH];
 	
 	mazeInit(maze);
+
 	printMaze(maze);
 
 	return 0;

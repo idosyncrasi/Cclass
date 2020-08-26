@@ -45,21 +45,14 @@ point pickDir(int maze[mW][mH], struct point pnt){
     point n,e,s,w;
 
     if(northPos != 0){
-        point n = { pnt.x, pnt.y-1 };
+        n = (point){ pnt.x, pnt.y-1 };
     }else if(eastPos != 0){
-        point e = { pnt.x+1, pnt.y };
+        e = (point){ pnt.x+1, pnt.y };
     }else if(southPos != 0){
-        point s = { pnt.x, pnt.y+1 };
+        s = (point){ pnt.x, pnt.y+1 };
     }else if(westPos != 0){
-        point w = { pnt.x-1, pnt.y };
+        w = (point){ pnt.x-1, pnt.y };
     }
-
-    /*
-	struct point n = { pnt.x, pnt.y-1 },
-				 e = { pnt.x+1, pnt.y },
-				 s = { pnt.x, pnt.y+1 },
-				 w = { pnt.x-1, pnt.y };
-     */
 
     if(&maze[n.x][n.y] == 0 && northPos != 0){
         northPos = 1;
@@ -106,10 +99,23 @@ void mazeInit(int maze[mW][mH]){
     }
 }
 
+void printMazeColor(int maze[mW][mH]){
+    for(int i = 0; i < mW; i++){
+        for(int v = 0; v < mH; v++){
+            if(maze[i][v] == 0){
+	    	printf("\033[1;47m \033[0m");
+	    	}else{
+	    		printf(" ");
+	    	}
+        }
+        printf("\n");
+    }
+}
+
 void printMaze(int maze[mW][mH]){
     for(int i = 0; i < mW; i++){
         for(int v = 0; v < mH; v++){
-            printf("%d ",maze[i][v]);
+	    	printf("%d ", maze[i][v]);
         }
         printf("\n");
     }
@@ -123,6 +129,22 @@ bool equalTo(struct point pnt1, struct point pnt2){
     }
 }
 
+int getError(struct point res){
+    if(equalTo(res, errGen)){
+        printf("\033[31mError\n\n\033[0m");
+        return 1;
+    }else if(equalTo(res, errOOB)){
+        printf("\033[31mIndex out of bounds\n\n\033[0m");
+        return 2;
+    }else if(equalTo(res, errNoDir)){
+        printf("\033[31mNo direction found\n\n\033[0m");
+        return 3;
+    }else{
+		printf("\n");
+		return 0;
+	}
+}
+
 int main(){
     int maze[mW][mH];
 
@@ -132,18 +154,5 @@ int main(){
 
     point res = pickDir(maze, origin);
 
-    if(equalTo(res, errGen)){
-        printf("Error");
-        return 1;
-    }else if(equalTo(res, errOOB)){
-        printf("Index out of bounds");
-        return 2;
-    }else if(equalTo(res, errNoDir)){
-        printf("No direction found");
-        return 3;
-    }else{
-
-    }
-
-    return 0;
+	return getError(res);
 }

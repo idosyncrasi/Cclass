@@ -77,7 +77,7 @@ point pickDir(int maze[mW][mH], struct point pnt){
 
     int num =  getNum(0, 3);
 
-    // TODO: Fails, find a way to get it to output something
+    // TODO(#2): Fails, find a way to get it to output something
     if(num == 0 && northPos == 1){
         return n;
     }else if(num == 1 && eastPos == 1){

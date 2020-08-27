@@ -48,15 +48,23 @@ point pickDir(int maze[mW][mH], struct point pnt){
 	printf("westPos: %d\n", westPos);
 	printf("eastPos: %d\n\n", eastPos);
 
+	printf("pnt.x: %d, pnt.y: %d\n", pnt.x, pnt.y-1);
+	printf("s.x: %d, s.y: %d\n", pnt.x, pnt.y+1);
+	printf("w.x: %d, w.y: %d\n", pnt.x-1, pnt.y);
+	printf("e.x: %d, e.y: %d\n\n", pnt.x+1, pnt.y);
+
 	// If the index exists, assign a point to it
     point n,e,s,w;
     if(northPos != 0){
-        n = (point){ pnt.x, pnt.y-1 };
-    }else if(eastPos != 0){
+		n = (point){ pnt.x, pnt.y-1 };
+	}
+	if(eastPos != 0){
         e = (point){ pnt.x+1, pnt.y };
-    }else if(southPos != 0){
+    }
+	if(southPos != 0){
         s = (point){ pnt.x, pnt.y+1 };
-    }else if(westPos != 0){
+    }
+	if(westPos != 0){
         w = (point){ pnt.x-1, pnt.y };
     }
 

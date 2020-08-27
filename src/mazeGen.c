@@ -25,25 +25,31 @@ point pickDir(int maze[mW][mH], struct point pnt){
         southPos = 1,
         westPos  = 1;
 
-    // North
+	//Debug prints
+	printf("pnt.x: %d, pnt.y: %d\n\n", pnt.x, pnt.y);
+
+    // Check if index doesn't exist
     if(pnt.y-1 < 0 ){
         northPos = 0;
     }
-    // South
     if(pnt.y+1 > mH){
         southPos = 0;
     }
-    // West
     if(pnt.x-1 < 0){
         westPos = 0;
     }
-    // East
     if(pnt.x+1 > mW){
         eastPos = 0;
     }
 
-    point n,e,s,w;
+	// Debug prints
+	printf("northPos: %d\n", northPos);
+	printf("southPos: %d\n", southPos);
+	printf("westPos: %d\n", westPos);
+	printf("eastPos: %d\n\n", eastPos);
 
+	// If the index exists, assign a point to it
+    point n,e,s,w;
     if(northPos != 0){
         n = (point){ pnt.x, pnt.y-1 };
     }else if(eastPos != 0){
@@ -54,30 +60,40 @@ point pickDir(int maze[mW][mH], struct point pnt){
         w = (point){ pnt.x-1, pnt.y };
     }
 
-    if(&maze[n.x][n.y] == 0 && northPos != 0){
-        northPos = 1;
-    }else{
+	// Debug prints
+	printf("n.x: %d, n.y: %d\n", n.x, n.y);
+	printf("s.x: %d, s.y: %d\n", s.x, s.y);
+	printf("w.x: %d, w.y: %d\n", w.x, w.y);
+	printf("e.x: %d, e.y: %d\n\n", e.x, e.y);
+
+	// If the spot is not filled already
+    if( !(&maze[n.x][n.y] == 0 && northPos != 0) ){
         northPos = 0;
     }
-    if(&maze[e.x][e.y] == 0 && eastPos != 0){
-        eastPos = 1;
-    }else{
-        eastPos = 0;
-    }
-    if(&maze[s.x][s.y] == 0 && southPos != 0){
-        southPos = 1;
-    }else{
+	if( !(&maze[n.x][n.y] == 0 && southPos != 0) ){
         southPos = 0;
     }
-    if(&maze[w.x][w.y] == 0 && westPos != 0){
-        westPos = 1;
-    }else{
+	if( !(&maze[n.x][n.y] == 0 && eastPos != 0) ){
+        eastPos = 0;
+    }
+	if( !(&maze[n.x][n.y] == 0 && westPos != 0) ){
         westPos = 0;
     }
 
+	// Get random number to find direction
     int num =  getNum(0, 3);
 
+	// Debug prints
+	printf("num: %d\n", num);
+	printf("northPos: %d\n", northPos);
+	printf("southPos: %d\n", southPos);
+	printf("westPos: %d\n", westPos);
+	printf("eastPos: %d\n\n", eastPos);
+
+
     // TODO(#2): Fails, find a way to get it to output something
+	// If the test fails once, it will not return a pointer
+	// Loop or increment in order to get a value, note that not randomizing the values creates tendancy
     if(num == 0 && northPos == 1){
         return n;
     }else if(num == 1 && eastPos == 1){

@@ -10,10 +10,7 @@ typedef struct point{
     int x, y;
 }point;
 
-point origin   = {0,  0},
-             errGen   = {-1, 0},
-             errOOB   = {-1, 1},
-             errNoDir = {-1, 2};
+point origin   = {0,  0}, errGen   = {-1, 0}, errOOB   = {-1, 1}, errNoDir = {-1, 2};
 
 void printPoint(struct point pnt, char* name){
 	printf("%s.x: %d, %s.y: %d\n", name, pnt.x, name, pnt.y);
@@ -135,6 +132,14 @@ point pickDir(int maze[mW][mH], struct point pnt){
 	return errNoDir;
 }
 
+point traverse(int maze[mW][mH], struct point pnt){
+	point dir = pickDir(maze, pnt);
+
+	maze[pnt.x][pnt.y] = 1;
+
+	return dir;
+}
+
 void mazeInit(int maze[mW][mH]){
     for(int i = 0; i < mW; i++){
         for(int v = 0; v < mH; v++){
@@ -173,7 +178,7 @@ bool equalTo(struct point pnt1, struct point pnt2){
     }
 }
 
-int getError(struct point res){
+int getPointError(struct point res){
     if(equalTo(res, errGen)){
         printf("\033[31mError\n\n\033[0m");
         return 1;
@@ -192,14 +197,15 @@ int getError(struct point res){
 int main(){
     srand(time(0));
     int maze[mW][mH];
+	point history[mW*mH];
 
     mazeInit(maze);
 
-    printMaze(maze);
+	for(int i = 0; i < 1000; i++){
+    	origin = traverse(maze, origin);
+	}
 
-    point res = pickDir(maze, origin);
+	printMaze(maze);
 
-	printPoint(res, "res");
-
-	return getError(res);
+	return 0;
 }

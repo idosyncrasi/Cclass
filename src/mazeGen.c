@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <time.h>
 
 int mW = 10;
 int mH = 10;
@@ -8,6 +9,7 @@ int mH = 10;
 typedef struct point{
     int x, y;
 }point;
+
 point origin   = {0,  0},
              errGen   = {-1, 0},
              errOOB   = {-1, 1},
@@ -25,7 +27,7 @@ point pickDir(int maze[mW][mH], struct point pnt){
         westPos  = 1;
 
 	//Debug prints
-	printf("\npnt.x: %d, pnt.y: %d\n\n", pnt.x, pnt.y);
+	// printf("\npnt.x: %d, pnt.y: %d\n\n", pnt.x, pnt.y);
 
     // Check if index doesn't exist
     if(pnt.y-1 < 0 ){
@@ -42,15 +44,15 @@ point pickDir(int maze[mW][mH], struct point pnt){
     }
 
 	// Debug prints
-	printf("northPos: %d\n", northPos);
-	printf("southPos: %d\n", southPos);
-	printf("westPos: %d\n", westPos);
-	printf("eastPos: %d\n\n", eastPos);
+	// printf("northPos: %d\n", northPos);
+	// printf("southPos: %d\n", southPos);
+	// printf("westPos: %d\n", westPos);
+	// printf("eastPos: %d\n\n", eastPos);
 
-	printf("North, pnt.x: %d, pnt.y: %d\n", pnt.x, pnt.y-1);
-	printf("South, pnt.x: %d, pnt.y: %d\n", pnt.x, pnt.y+1);
-	printf("West, pnt.x: %d, pnt.y: %d\n", pnt.x-1, pnt.y);
-	printf("East, pnt.x: %d, pnt.y: %d\n\n", pnt.x+1, pnt.y);
+	// printf("North, pnt.x: %d, pnt.y: %d\n", pnt.x, pnt.y-1);
+	// printf("South, pnt.x: %d, pnt.y: %d\n", pnt.x, pnt.y+1);
+	// printf("West, pnt.x: %d, pnt.y: %d\n", pnt.x-1, pnt.y);
+	// printf("East, pnt.x: %d, pnt.y: %d\n\n", pnt.x+1, pnt.y);
 
 	// If the index exists, assign a point to it
     point n,e,s,w;
@@ -76,10 +78,10 @@ point pickDir(int maze[mW][mH], struct point pnt){
 	}
 
 	// Debug prints
-	printf("n.x: %d, n.y: %d\n", n.x, n.y);
-	printf("s.x: %d, s.y: %d\n", s.x, s.y);
-	printf("w.x: %d, w.y: %d\n", w.x, w.y);
-	printf("e.x: %d, e.y: %d\n\n", e.x, e.y);
+	// printf("n.x: %d, n.y: %d\n", n.x, n.y);
+	// printf("s.x: %d, s.y: %d\n", s.x, s.y);
+	// printf("w.x: %d, w.y: %d\n", w.x, w.y);
+	// printf("e.x: %d, e.y: %d\n\n", e.x, e.y);
 
 	// If the spot is not filled already
     if( &maze[n.x][n.y] == 0 && northPos != 0 ){
@@ -98,37 +100,37 @@ point pickDir(int maze[mW][mH], struct point pnt){
 	// Get random number to find direction
 
 	// Debug prints
-	printf("northPos: %d\n", northPos);
-	printf("southPos: %d\n", southPos);
-	printf("westPos: %d\n", westPos);
-	printf("eastPos: %d\n\n", eastPos);
+	// printf("northPos: %d\n", northPos);
+	// printf("southPos: %d\n", southPos);
+	// printf("westPos: %d\n", westPos);
+	// printf("eastPos: %d\n\n", eastPos);
 
-
-    // TODO(#2): Fails, find a way to get it to output something
-	// If the test fails once, it will not return a pointer
-	// Loop or increment in order to get a value, note that not randomizing the values creates tendancy
-
-	int sum = northPos + eastPos + southPos + westPos;
+    int sum = northPos + eastPos + southPos + westPos;
 	int count = 0;
 	point arr[sum];
+
     if(northPos == 1){
 		arr[count] = n;
 		count++;
     }
 	if(eastPos == 1){
-        arr[count] = n;
+        arr[count] = e;
 		count++;
     }
 	if(southPos == 1){
-        arr[count] = n;
+        arr[count] = s;
 		count++;
     }
 	if(westPos == 1){
-        arr[count] = n;
+        arr[count] = w;
 		count++;
     }
-    
-	
+
+	int pick = rand() % sum;
+
+	if(sum >= pick){
+	    return arr[pick];
+	}
 
 	return errNoDir;
 }
@@ -188,6 +190,7 @@ int getError(struct point res){
 }
 
 int main(){
+    srand(time(0));
     int maze[mW][mH];
 
     mazeInit(maze);

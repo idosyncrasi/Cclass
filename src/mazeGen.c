@@ -10,6 +10,8 @@ typedef struct point{
     int x, y;
 }point;
 
+point* history[5000];
+
 point origin   = {0,  0}, errGen   = {-1, 0}, errOOB   = {-1, 1}, errNoDir = {-1, 2};
 
 void printPoint(struct point pnt, char* name){
@@ -94,8 +96,6 @@ point pickDir(int maze[mW][mH], struct point pnt){
         westPos = 0;
     }
 
-	// Get random number to find direction
-
 	// Debug prints
 	// printf("northPos: %d\n", northPos);
 	// printf("southPos: %d\n", southPos);
@@ -134,6 +134,13 @@ point pickDir(int maze[mW][mH], struct point pnt){
 
 point traverse(int maze[mW][mH], struct point pnt){
 	point dir = pickDir(maze, pnt);
+
+    for(int i = 0; i < 5000; i++){
+        if(!history[i]){
+            history[i] = &dir;
+            break;
+        }
+    }
 
 	maze[pnt.x][pnt.y] = 1;
 
@@ -197,15 +204,21 @@ int getPointError(struct point res){
 int main(){
     srand(time(0));
     int maze[mW][mH];
-	point history[mW*mH];
 
     mazeInit(maze);
 
-	for(int i = 0; i < 1000; i++){
+	for(int i = 0; i < 1000; i++)
     	origin = traverse(maze, origin);
-	}
 
 	printMaze(maze);
+
+    for(int i = 0; i < 5000; i++){
+        if(history[i]){
+            printf("x: %d, y: %d\n", history[i]->x, history[i]->y);
+        }else{
+            break;
+        }
+    }
 
 	return 0;
 }

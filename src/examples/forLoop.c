@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "../include/forLoop.h"
+#include "../../include/forLoop.h"
 
 void forLoop(){
 	int arr[5];

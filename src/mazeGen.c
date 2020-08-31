@@ -1,22 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #include <time.h>
+
+#include "../include/mazeGen.h"
+#include "../include/point.h"
+#include "../include/dyArr.h"
 
 int mW = 10;
 int mH = 10;
 
-typedef struct point{
-    int x, y;
-}point;
-
-point origin   = {0,  0}, errGen   = {-1, 0}, errOOB   = {-1, 1}, errNoDir = {-1, 2};
-
-void printPoint(struct point pnt, char* name){
-	printf("%s.x: %d, %s.y: %d\n", name, pnt.x, name, pnt.y);
-}
-
-point pickDir(int maze[mW][mH], struct point pnt){
+point pickDir(int maze[mW][mH], point pnt){
 
     int northPos = 1,
         eastPos  = 1,
@@ -81,20 +74,19 @@ point pickDir(int maze[mW][mH], struct point pnt){
 	// printf("e.x: %d, e.y: %d\n\n", e.x, e.y);
 
 	// If the spot is not filled already
-    if( &maze[n.x][n.y] == 0 && northPos != 0 ){
+
+    if( maze[n.x][n.y] == 1 && northPos != 0 ){
         northPos = 0;
     }
-	if( &maze[n.x][n.y] == 0 && southPos != 0 ){
+	if( maze[s.x][s.y] == 1 && southPos != 0 ){
         southPos = 0;
     }
-	if( &maze[n.x][n.y] == 0 && eastPos != 0 ){
+	if( maze[e.x][e.y] == 1 && eastPos != 0 ){
         eastPos = 0;
     }
-	if( &maze[n.x][n.y] == 0 && westPos != 0 ){
+	if( maze[w.x][w.y] == 1 && westPos != 0 ){
         westPos = 0;
     }
-
-	// Get random number to find direction
 
 	// Debug prints
 	// printf("northPos: %d\n", northPos);
@@ -103,6 +95,12 @@ point pickDir(int maze[mW][mH], struct point pnt){
 	// printf("eastPos: %d\n\n", eastPos);
 
     int sum = northPos + eastPos + southPos + westPos;
+
+	// If none available, stop
+	if(sum == 0){
+		return errNoDir;
+	}
+
 	int count = 0;
 	point arr[sum];
 
@@ -132,10 +130,18 @@ point pickDir(int maze[mW][mH], struct point pnt){
 	return errNoDir;
 }
 
-point traverse(int maze[mW][mH], struct point pnt){
+point traverse(int maze[mW][mH], point pnt){
 	point dir = pickDir(maze, pnt);
 
+	if(dir.x == -1){
+		return errNoDir;
+	}
+
 	maze[pnt.x][pnt.y] = 1;
+
+	printf("Move to: ");
+	printPoint(dir, "dir");
+
 
 	return dir;
 }
@@ -170,30 +176,6 @@ void printMaze(int maze[mW][mH]){
     }
 }
 
-bool equalTo(struct point pnt1, struct point pnt2){
-    if(pnt1.x == pnt2.x && pnt1.y == pnt2.y){
-        return true;
-    }else{
-        return false;
-    }
-}
-
-int getPointError(struct point res){
-    if(equalTo(res, errGen)){
-        printf("\033[31mError\n\n\033[0m");
-        return 1;
-    }else if(equalTo(res, errOOB)){
-        printf("\033[31mIndex out of bounds\n\n\033[0m");
-        return 2;
-    }else if(equalTo(res, errNoDir)){
-        printf("\033[31mNo direction found\n\n\033[0m");
-        return 3;
-    }else{
-		printf("\n");
-		return 0;
-	}
-}
-
 int main(){
     srand(time(0));
     int maze[mW][mH];
@@ -203,6 +185,10 @@ int main(){
 
 	for(int i = 0; i < 1000; i++){
     	origin = traverse(maze, origin);
+		if(origin.x == -1){
+			getPointError(origin);
+			break;
+		}
 	}
 
 	printMaze(maze);

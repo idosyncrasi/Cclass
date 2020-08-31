@@ -6,17 +6,16 @@
 int mW = 10;
 int mH = 10;
 
-typedef struct point{
-    int x, y;
-}point;
+typedef struct point{int x, y;}point;
 
-point* history[5000];
+typedef struct pointId {int id;struct point pnt;}pointId;
+
+pointId history[5000];
 
 point origin   = {0,  0}, errGen   = {-1, 0}, errOOB   = {-1, 1}, errNoDir = {-1, 2};
 
-void printPoint(struct point pnt, char* name){
-	printf("%s.x: %d, %s.y: %d\n", name, pnt.x, name, pnt.y);
-}
+void printPoint(struct point pnt, char* name){printf("%s.x: %d, %s.y: %d\n", name, pnt.x, name, pnt.y);}
+void printHistPoint(struct point pnt, char* name, int id){printf("%s%d.x: %d, %s%d.y: %d\n", name, id, pnt.x, name, id, pnt.y);}
 
 point pickDir(int maze[mW][mH], struct point pnt){
 
@@ -135,9 +134,12 @@ point pickDir(int maze[mW][mH], struct point pnt){
 point traverse(int maze[mW][mH], struct point pnt){
 	point dir = pickDir(maze, pnt);
 
+    //printPoint(dir);
+
     for(int i = 0; i < 5000; i++){
-        if(!history[i]){
-            history[i] = &dir;
+        if(history[i].id == -1){
+            history[i].pnt = dir;
+            history[i].id = i;
             break;
         }
     }
@@ -152,6 +154,9 @@ void mazeInit(int maze[mW][mH]){
         for(int v = 0; v < mH; v++){
             maze[i][v] = 0;
         }
+    }
+    for(int i = 0; i < 5000; i++){
+        history[i].id = -1;
     }
 }
 
@@ -212,13 +217,28 @@ int main(){
 
 	printMaze(maze);
 
+    /*
     for(int i = 0; i < 5000; i++){
-        if(history[i]){
-            printf("x: %d, y: %d\n", history[i]->x, history[i]->y);
-        }else{
-            break;
+        if(history[i].id != -1){
+            printHistPoint(history[i].pnt, "histPnt", history[i].id);
         }
     }
+    */
+
+    /*
+    for(int i = 0; i < 5000; i++){
+        if(history[i].id != -1){
+            point* curPnt = &history[i].pnt;
+            int curId = ;history[i].id;
+            for(int v = 0; v < 5000 - i; v++){
+                if( (curPnt->x == history[v].pnt.x) && (curPnt->y == history[v].pnt.y)){
+                    printf("Welp, somethings happened, Ref: %d, Id: %d\n", curId, history[v].id);
+                } 
+
+            }
+        }
+    }
+    */
 
 	return 0;
 }

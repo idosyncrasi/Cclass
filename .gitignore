@@ -1,9 +1,3 @@
-# Travis
-*.yml
-
-# Idea
-.idea/
-
 # C things
 # Prerequisites
 *.d

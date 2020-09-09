@@ -92,13 +92,13 @@ point pickDir(int maze[mw][mh], struct point pnt){
     if( &maze[n.x][n.y] == 0 && northPos != 0 ){
         northPos = 0;
     }
-	if( &maze[n.x][n.y] == 0 && southPos != 0 ){
+	if( &maze[s.x][s.y] == 0 && southPos != 0 ){
         southPos = 0;
     }
-	if( &maze[n.x][n.y] == 0 && eastPos != 0 ){
+	if( &maze[e.x][e.y] == 0 && eastPos != 0 ){
         eastPos = 0;
     }
-	if( &maze[n.x][n.y] == 0 && westPos != 0 ){
+	if( &maze[w.x][w.y] == 0 && westPos != 0 ){
         westPos = 0;
     }
 
@@ -234,13 +234,13 @@ int gen(){
     return 0;
 }
 
+int dbgGen(){
+    int ret = gen();
+    writeHist();
+    return ret;
+}
+
 int main(){
-    //return gen();
-
-    int maze[mw][mh];
-
-    traverse(maze, (point){0,1});
-    traverse(maze, (point){0,0});
-    printMaze(maze);
+    return dbgGen();
 }
 

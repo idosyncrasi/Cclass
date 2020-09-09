@@ -3,8 +3,8 @@
 #include <stdbool.h>
 #include <time.h>
 
-int mW = 10;
-int mH = 10;
+int mw = 10;
+int mh = 10;
 
 typedef struct point{int x, y;}point;
 
@@ -14,7 +14,9 @@ pointId history[5000];
 
 point origin   = {0,  0}, errGen   = {-1, 0}, errOOB   = {-1, 1}, errNoDir = {-1, 2};
 
-void printPoint(struct point pnt, char* name){printf("%s.x: %d, %s.y: %d\n", name, pnt.x, name, pnt.y);}
+void printPoint(struct point pnt, char* name){
+    printf("%s.x: %d, %s.y: %d\n", name, pnt.x, name, pnt.y);
+}
 void printHistPoint(struct pointId pnt, char* name){
     printf("%s%d.x: %d, %s%d.y: %d\n",
         name, pnt.id, pnt.pnt.x, name, pnt.id, pnt.pnt.y);
@@ -22,7 +24,7 @@ void printHistPoint(struct pointId pnt, char* name){
 
 int sizeofHist(){return sizeof(history)/sizeof(history[0]);}
 
-point pickDir(int maze[mW][mH], struct point pnt){
+point pickDir(int maze[mw][mh], struct point pnt){
 
     int northPos = 1,
         eastPos  = 1,
@@ -36,13 +38,13 @@ point pickDir(int maze[mW][mH], struct point pnt){
     if(pnt.y-1 < 0 ){
         northPos = 0;
     }
-    if(pnt.y+1 > mH){
+    if(pnt.y+1 > mh){
         southPos = 0;
     }
     if(pnt.x-1 < 0){
         westPos = 0;
     }
-    if(pnt.x+1 > mW){
+    if(pnt.x+1 > mw){
         eastPos = 0;
     }
 
@@ -136,11 +138,20 @@ point pickDir(int maze[mW][mH], struct point pnt){
 	return errNoDir;
 }
 
-point traverse(int maze[mW][mH], struct point pnt){
+bool equalTo(struct point pnt1, struct point pnt2){
+    if(pnt1.x == pnt2.x && pnt1.y == pnt2.y){
+        return true;
+    }else{
+        return false;
+    }
+}
+
+
+point traverse(int maze[mw][mh], struct point pnt){
 	point dir = pickDir(maze, pnt);
 
     for(int i = 0; i < sizeofHist(); i++){
-        if(history[i].id == -1){
+        if(history[i].id == -1 && !(equalTo(dir, history[i].pnt))){
             history[i].pnt = dir;
             history[i].id = i;
             break;
@@ -152,9 +163,9 @@ point traverse(int maze[mW][mH], struct point pnt){
 	return dir;
 }
 
-void mazeInit(int maze[mW][mH]){
-    for(int i = 0; i < mW; i++){
-        for(int v = 0; v < mH; v++){
+void mazeInit(int maze[mw][mh]){
+    for(int i = 0; i < mw; i++){
+        for(int v = 0; v < mh; v++){
             maze[i][v] = 0;
         }
     }
@@ -163,9 +174,9 @@ void mazeInit(int maze[mW][mH]){
     }
 }
 
-void printMazeColor(int maze[mW][mH]){
-    for(int i = 0; i < mW; i++){
-        for(int v = 0; v < mH; v++){
+void printMazeColor(int maze[mw][mh]){
+    for(int i = 0; i < mw; i++){
+        for(int v = 0; v < mh; v++){
             if(maze[i][v] == 0){
 	    	printf("\033[1;47m \033[0m");
 	    	}else{
@@ -176,20 +187,12 @@ void printMazeColor(int maze[mW][mH]){
     }
 }
 
-void printMaze(int maze[mW][mH]){
-    for(int i = 0; i < mW; i++){
-        for(int v = 0; v < mH; v++){
+void printMaze(int maze[mw][mh]){
+    for(int i = 0; i < mw; i++){
+        for(int v = 0; v < mh; v++){
 	    	printf("%d ", maze[i][v]);
         }
         printf("\n");
-    }
-}
-
-bool equalTo(struct point pnt1, struct point pnt2){
-    if(pnt1.x == pnt2.x && pnt1.y == pnt2.y){
-        return true;
-    }else{
-        return false;
     }
 }
 
@@ -212,24 +215,32 @@ int getPointError(struct point res){
 void writeHist(){
     for(int i = 0; i < sizeofHist(); i++){
         if(history[i].id != -1){
-            printHistPoint(history[i]);
+            printHistPoint(history[i], "hist");
         }
     }
 }
 
-int main(){
+int gen(){
     srand(time(0));
-    int maze[mW][mH];
+    int maze[mw][mh];
 
     mazeInit(maze);
 
-	for(int i = 0; i < 1000; i++)
-    	origin = traverse(maze, origin);
+    for(int i = 0; i < 10; i++)
+        origin = traverse(maze, origin);
 
-	printMaze(maze);
+    printMaze(maze);
 
-    writeHist();
+    return 0;
+}
 
-	return 0;
+int main(){
+    //return gen();
+
+    int maze[mw][mh];
+
+    traverse(maze, (point){0,1});
+    traverse(maze, (point){0,0});
+    printMaze(maze);
 }
 

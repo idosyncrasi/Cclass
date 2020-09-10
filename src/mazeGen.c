@@ -196,7 +196,11 @@ void printMazeColor(int maze[mw][mh]){
 void printMaze(int maze[mw][mh]){
     for(int i = 0; i < mw; i++){
         for(int v = 0; v < mh; v++){
-	    	printf("%d ", maze[i][v]);
+	    	if(maze[i][v] == 1){
+                printf("\033[31m%d\033[0m ", maze[i][v]);
+            }else{
+                printf("%d ", maze[i][v]);
+            }
         }
         printf("\n");
     }

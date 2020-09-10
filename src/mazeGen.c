@@ -32,7 +32,7 @@ point pickDir(int maze[mw][mh], struct point pnt){
         westPos  = 1;
 
 	//Debug prints
-	// printf("\npnt.x: %d, pnt.y: %d\n\n", pnt.x, pnt.y);
+	printf("\npnt.x: %d, pnt.y: %d\n\n", pnt.x, pnt.y);
 
     // Check if index doesn't exist
     if(pnt.y-1 < 0 ){
@@ -49,15 +49,15 @@ point pickDir(int maze[mw][mh], struct point pnt){
     }
 
 	// Debug prints
-	// printf("northPos: %d\n", northPos);
-	// printf("southPos: %d\n", southPos);
-	// printf("westPos: %d\n", westPos);
-	// printf("eastPos: %d\n\n", eastPos);
+	printf("northPos: %d\n", northPos);
+	printf("southPos: %d\n", southPos);
+	printf("westPos: %d\n", westPos);
+	printf("eastPos: %d\n\n", eastPos);
 
-	// printf("North, pnt.x: %d, pnt.y: %d\n", pnt.x, pnt.y-1);
-	// printf("South, pnt.x: %d, pnt.y: %d\n", pnt.x, pnt.y+1);
-	// printf("West, pnt.x: %d, pnt.y: %d\n", pnt.x-1, pnt.y);
-	// printf("East, pnt.x: %d, pnt.y: %d\n\n", pnt.x+1, pnt.y);
+	printf("North, pnt.x: %d, pnt.y: %d\n", pnt.x, pnt.y-1);
+	printf("South, pnt.x: %d, pnt.y: %d\n", pnt.x, pnt.y+1);
+	printf("West, pnt.x: %d, pnt.y: %d\n", pnt.x-1, pnt.y);
+	printf("East, pnt.x: %d, pnt.y: %d\n\n", pnt.x+1, pnt.y);
 
 	// If the index exists, assign a point to it
     point n,e,s,w;
@@ -83,30 +83,36 @@ point pickDir(int maze[mw][mh], struct point pnt){
 	}
 
 	// Debug prints
-	// printf("n.x: %d, n.y: %d\n", n.x, n.y);
-	// printf("s.x: %d, s.y: %d\n", s.x, s.y);
-	// printf("w.x: %d, w.y: %d\n", w.x, w.y);
-	// printf("e.x: %d, e.y: %d\n\n", e.x, e.y);
+	printf("n.x: %d, n.y: %d\n", n.x, n.y);
+	printf("s.x: %d, s.y: %d\n", s.x, s.y);
+	printf("w.x: %d, w.y: %d\n", w.x, w.y);
+	printf("e.x: %d, e.y: %d\n\n", e.x, e.y);
 
 	// If the spot is not filled already
-    if( &maze[n.x][n.y] == 0 && northPos != 0 ){
+    if( maze[n.x][n.y] == 1 && northPos != 0 ){
         northPos = 0;
     }
-	if( &maze[s.x][s.y] == 0 && southPos != 0 ){
+	if( maze[s.x][s.y] == 1 && southPos != 0 ){
         southPos = 0;
     }
-	if( &maze[e.x][e.y] == 0 && eastPos != 0 ){
+	if( maze[e.x][e.y] == 1 && eastPos != 0 ){
         eastPos = 0;
     }
-	if( &maze[w.x][w.y] == 0 && westPos != 0 ){
+	if( maze[w.x][w.y] == 1 && westPos != 0 ){
         westPos = 0;
     }
 
+    // Debug spots filled
+    printf("n filled: %d\n"  , maze[n.x][n.y] == 1);
+    printf("s filled: %d\n"  , maze[s.x][s.y] == 1);
+    printf("e filled: %d\n"  , maze[e.x][e.y] == 1);
+    printf("w filled: %d\n\n", maze[w.x][w.y] == 1);
+
 	// Debug prints
-	// printf("northPos: %d\n", northPos);
-	// printf("southPos: %d\n", southPos);
-	// printf("westPos: %d\n", westPos);
-	// printf("eastPos: %d\n\n", eastPos);
+	printf("northPos: %d\n", northPos);
+	printf("southPos: %d\n", southPos);
+	printf("westPos: %d\n", westPos);
+	printf("eastPos: %d\n\n", eastPos);
 
     int sum = northPos + eastPos + southPos + westPos;
 	int count = 0;
@@ -226,7 +232,7 @@ int gen(){
 
     mazeInit(maze);
 
-    for(int i = 0; i < 10; i++)
+    for(int i = 0; i < 20; i++)
         origin = traverse(maze, origin);
 
     printMaze(maze);
@@ -235,6 +241,7 @@ int gen(){
 }
 
 int dbgGen(){
+    srand(time(0));
     int ret = gen();
     writeHist();
     return ret;
@@ -244,3 +251,5 @@ int main(){
     return dbgGen();
 }
 
+// TODO: Somewhere uses 10 (0-10), it should be 9 (0-9). This causes
+//       the array to overflow, leaving numbers where they should't be

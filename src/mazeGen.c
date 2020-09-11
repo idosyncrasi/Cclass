@@ -24,7 +24,7 @@ void printHistPoint(struct pointId pnt, char* name){
 
 int sizeofHist(){return sizeof(history)/sizeof(history[0]);}
 
-point pickDir(int maze[mw][mh], struct point pnt){
+point pickDir(int maze[mw][mh], struct point pnt, bool debug){
 
     // I suspect TODO#1 to be somewhere in this funciton
 
@@ -33,8 +33,10 @@ point pickDir(int maze[mw][mh], struct point pnt){
         southPos = 1,
         westPos  = 1;
 
-	//Debug prints
-	printf("\npnt.x: %d, pnt.y: %d\n\n", pnt.x, pnt.y);
+	if(debug){
+	   printf("\npnt.x: %d, pnt.y: %d\n\n", pnt.x, pnt.y);
+    }
+    
 
     // Check if index doesn't exist
     if(pnt.y-1 < 0 ){
@@ -50,16 +52,17 @@ point pickDir(int maze[mw][mh], struct point pnt){
         eastPos = 0;
     }
 
-	// Debug prints
-	printf("northPos: %d\n", northPos);
-	printf("southPos: %d\n", southPos);
-	printf("westPos: %d\n", westPos);
-	printf("eastPos: %d\n\n", eastPos);
+	if(debug){
+    	printf("northPos: %d\n", northPos);
+    	printf("southPos: %d\n", southPos);
+    	printf("westPos: %d\n", westPos);
+    	printf("eastPos: %d\n\n", eastPos);
 
-	printf("North, pnt.x: %d, pnt.y: %d\n", pnt.x, pnt.y-1);
-	printf("South, pnt.x: %d, pnt.y: %d\n", pnt.x, pnt.y+1);
-	printf("West, pnt.x: %d, pnt.y: %d\n", pnt.x-1, pnt.y);
-	printf("East, pnt.x: %d, pnt.y: %d\n\n", pnt.x+1, pnt.y);
+    	printf("North, pnt.x: %d, pnt.y: %d\n", pnt.x, pnt.y-1);
+    	printf("South, pnt.x: %d, pnt.y: %d\n", pnt.x, pnt.y+1);
+    	printf("West, pnt.x: %d, pnt.y: %d\n", pnt.x-1, pnt.y);
+    	printf("East, pnt.x: %d, pnt.y: %d\n\n", pnt.x+1, pnt.y);
+    }
 
 	// If the index exists, assign a point to it
     point n,e,s,w;
@@ -84,11 +87,12 @@ point pickDir(int maze[mw][mh], struct point pnt){
 		w = (point){ -1, -1};
 	}
 
-	// Debug prints
-	printf("n.x: %d, n.y: %d\n", n.x, n.y);
-	printf("s.x: %d, s.y: %d\n", s.x, s.y);
-	printf("w.x: %d, w.y: %d\n", w.x, w.y);
-	printf("e.x: %d, e.y: %d\n\n", e.x, e.y);
+	if(debug){
+    	printf("n.x: %d, n.y: %d\n", n.x, n.y);
+    	printf("s.x: %d, s.y: %d\n", s.x, s.y);
+    	printf("w.x: %d, w.y: %d\n", w.x, w.y);
+    	printf("e.x: %d, e.y: %d\n\n", e.x, e.y);
+    }
 
 	// If the spot is not filled already
     if( maze[n.x][n.y] == 1 && northPos != 0 ){
@@ -104,17 +108,17 @@ point pickDir(int maze[mw][mh], struct point pnt){
         westPos = 0;
     }
 
-    // Debug spots filled
-    printf("n filled: %d\n"  , maze[n.x][n.y] == 1);
-    printf("s filled: %d\n"  , maze[s.x][s.y] == 1);
-    printf("e filled: %d\n"  , maze[e.x][e.y] == 1);
-    printf("w filled: %d\n\n", maze[w.x][w.y] == 1);
+    if(debug){
+        printf("n filled: %d\n"  , maze[n.x][n.y] == 1);
+        printf("s filled: %d\n"  , maze[s.x][s.y] == 1);
+        printf("e filled: %d\n"  , maze[e.x][e.y] == 1);
+        printf("w filled: %d\n\n", maze[w.x][w.y] == 1);
 
-	// Debug prints
-	printf("northPos: %d\n", northPos);
-	printf("southPos: %d\n", southPos);
-	printf("westPos: %d\n", westPos);
-	printf("eastPos: %d\n\n", eastPos);
+    	printf("northPos: %d\n", northPos);
+    	printf("southPos: %d\n", southPos);
+    	printf("westPos: %d\n", westPos);
+    	printf("eastPos: %d\n\n", eastPos);
+    }
 
     int sum = northPos + eastPos + southPos + westPos;
 
@@ -183,8 +187,8 @@ void printPointError(struct point res){
     }
 }
 
-point traverse(int maze[mw][mh], struct point pnt){
-	point dir = pickDir(maze, pnt);
+point traverse(int maze[mw][mh], struct point pnt, bool debug){
+	point dir = pickDir(maze, pnt, debug);
 
     for(int i = 0; i < sizeofHist(); i++){
         if(history[i].id == -1 && !(equalTo(dir, history[i].pnt))){
@@ -255,11 +259,12 @@ int gen(bool debug){
     mazeInit(maze);
 
     for(int i = 0; i < 100; i++){
-        origin = traverse(maze, origin);
+        origin = traverse(maze, origin, debug);
 
         if(getPointError(origin) != 0 && debug){
             printPointError(origin);
-            return getPointError(origin);
+            break;
+            // If break, backtrack until open space, re traverse, repeat until full
         }
     }
 
@@ -283,5 +288,5 @@ int main(){
 
 // TODO#1: Somewhere returns a point with a y value of 10, it should be 9. 
 //         This is becuase array indexes go from 0-9 for a 10 index array, not 1-10.
-//         It causes the array to overflow, leaving visited points that are not\
+//         It causes the array to overflow, leaving visited points that are not
 //         connected to the rest of the maze.

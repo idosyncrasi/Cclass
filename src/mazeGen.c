@@ -26,6 +26,8 @@ int sizeofHist(){return sizeof(history)/sizeof(history[0]);}
 
 point pickDir(int maze[mw][mh], struct point pnt){
 
+    // I suspect TODO#1 to be somewhere in this funciton
+
     int northPos = 1,
         eastPos  = 1,
         southPos = 1,
@@ -115,6 +117,11 @@ point pickDir(int maze[mw][mh], struct point pnt){
 	printf("eastPos: %d\n\n", eastPos);
 
     int sum = northPos + eastPos + southPos + westPos;
+
+    if(sum == 0){
+        return errNoDir;
+    }
+
 	int count = 0;
 	point arr[sum];
 
@@ -152,6 +159,29 @@ bool equalTo(struct point pnt1, struct point pnt2){
     }
 }
 
+int getPointError(struct point res){
+    if(equalTo(res, errGen)){
+        return 1;
+    }else if(equalTo(res, errOOB)){
+        return 2;
+    }else if(equalTo(res, errNoDir)){
+        return 3;
+    }else{
+        return 0;
+    }
+}
+
+void printPointError(struct point res){
+    if(getPointError(res) == 1){
+        printf("\033[31mError\n\033[0m");
+    }else if(getPointError(res) == 2){
+        printf("\033[31mIndex out of bounds\n\033[0m");
+    }else if(getPointError(res) == 3){
+        printf("\033[31mNo direction found\n\033[0m");
+    }else{
+        printf("No error\n");
+    }
+}
 
 point traverse(int maze[mw][mh], struct point pnt){
 	point dir = pickDir(maze, pnt);
@@ -206,48 +236,44 @@ void printMaze(int maze[mw][mh]){
     }
 }
 
-int getPointError(struct point res){
-    if(equalTo(res, errGen)){
-        printf("\033[31mError\n\n\033[0m");
-        return 1;
-    }else if(equalTo(res, errOOB)){
-        printf("\033[31mIndex out of bounds\n\n\033[0m");
-        return 2;
-    }else if(equalTo(res, errNoDir)){
-        printf("\033[31mNo direction found\n\n\033[0m");
-        return 3;
-    }else{
-		printf("\n");
-		return 0;
-	}
-}
-
 void writeHist(){
     for(int i = 0; i < sizeofHist(); i++){
         if(history[i].id != -1){
-            printHistPoint(history[i], "hist");
+            if(getPointError(history[i].pnt) == 0){
+                printHistPoint(history[i], "hist");
+            }else{
+                printPointError(history[i].pnt);
+            }
         }
     }
 }
 
-int gen(){
+int gen(bool debug){
     srand(time(0));
     int maze[mw][mh];
 
     mazeInit(maze);
 
-    for(int i = 0; i < 20; i++)
+    for(int i = 0; i < 100; i++){
         origin = traverse(maze, origin);
 
+        if(getPointError(origin) != 0 && debug){
+            printPointError(origin);
+            return getPointError(origin);
+        }
+    }
+
     printMaze(maze);
+
+    if(debug){
+        writeHist();
+    }
 
     return 0;
 }
 
 int dbgGen(){
-    srand(time(0));
-    int ret = gen();
-    writeHist();
+    int ret = gen(true);
     return ret;
 }
 
@@ -255,5 +281,7 @@ int main(){
     return dbgGen();
 }
 
-// TODO: Somewhere uses 10 (0-10), it should be 9 (0-9). This causes
-//       the array to overflow, leaving numbers where they should't be
+// TODO#1: Somewhere returns a point with a y value of 10, it should be 9. 
+//         This is becuase array indexes go from 0-9 for a 10 index array, not 1-10.
+//         It causes the array to overflow, leaving visited points that are not\
+//         connected to the rest of the maze.

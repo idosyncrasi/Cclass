@@ -259,7 +259,6 @@ point ifDir(int maze[mw][mh], struct point pnt, bool debug){
     }else{
         return (point){0,0};
     }
-
 }
 
 bool equalTo(struct point pnt1, struct point pnt2){
@@ -388,9 +387,9 @@ int gen(bool debug){
                     printPointError(origin);
                 }
                 break;
-                // If break, backtrack until open space, re traverse, repeat until full
             }
         }
+        printf("Ended line");
         point res = backtrack(maze);
         if(equalTo(res, fin)){
             break;
@@ -408,5 +407,48 @@ int gen(bool debug){
 }
 
 int main(){
-    return gen(true);
+    srand(time(0));
+    int maze[mw][mh];
+
+    mazeInit(maze);
+
+    bool debug = true;
+
+    for(int i = 0; i < mw*mh; i++){
+        origin = traverse(maze, origin, debug);
+
+        if(getPointError(origin) != 0){
+            if(debug){
+                printPointError(origin);
+            }
+            break;
+        }
+    }
+    printf("Ended line\n");
+    point res = backtrack(maze);
+    if(equalTo(res, fin)){
+        printf("Done right\n");
+        return 0;
+    }
+    origin = res;
+    printf("Done wrong\n");
+
+    for(int i = 0; i < mw*mh; i++){
+        origin = traverse(maze, origin, debug);
+
+        if(getPointError(origin) != 0){
+            if(debug){
+                printPointError(origin);
+            }
+            break;
+        }
+    }
+    printf("Ended line\n");
+    res = backtrack(maze);
+    if(equalTo(res, fin)){
+        printf("Done right\n");
+        return 0;
+    }
+    origin = res;
+    printf("Done wrong\n");
 }

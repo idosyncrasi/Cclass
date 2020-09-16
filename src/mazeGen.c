@@ -42,13 +42,13 @@ point pickDir(int maze[mw][mh], struct point pnt, bool debug){
     if(pnt.y-1 < 0 ){
         northPos = 0;
     }
-    if(pnt.y+1 > mh){
+    if(pnt.y+1 >= mh){
         southPos = 0;
     }
     if(pnt.x-1 < 0){
         westPos = 0;
     }
-    if(pnt.x+1 > mw){
+    if(pnt.x+1 >= mw){
         eastPos = 0;
     }
 

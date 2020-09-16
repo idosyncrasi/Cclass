@@ -270,7 +270,7 @@ bool equalTo(struct point pnt1, struct point pnt2){
 }
 
 point backtrack(int maze[mw][mh]){
-    for(int i = sizeofHist() - 1; i > 0; i++){
+    for(int i = 4999; i > 0; i--){
         point cur = history[i].pnt;
         point res = ifDir(maze, cur, false);
         if(equalTo(res, (point){0,0})){
@@ -407,48 +407,5 @@ int gen(bool debug){
 }
 
 int main(){
-    srand(time(0));
-    int maze[mw][mh];
-
-    mazeInit(maze);
-
-    bool debug = true;
-
-    for(int i = 0; i < mw*mh; i++){
-        origin = traverse(maze, origin, debug);
-
-        if(getPointError(origin) != 0){
-            if(debug){
-                printPointError(origin);
-            }
-            break;
-        }
-    }
-    printf("Ended line\n");
-    point res = backtrack(maze);
-    if(equalTo(res, fin)){
-        printf("Done right\n");
-        return 0;
-    }
-    origin = res;
-    printf("Done wrong\n");
-
-    for(int i = 0; i < mw*mh; i++){
-        origin = traverse(maze, origin, debug);
-
-        if(getPointError(origin) != 0){
-            if(debug){
-                printPointError(origin);
-            }
-            break;
-        }
-    }
-    printf("Ended line\n");
-    res = backtrack(maze);
-    if(equalTo(res, fin)){
-        printf("Done right\n");
-        return 0;
-    }
-    origin = res;
-    printf("Done wrong\n");
+    return gen(true);
 }
